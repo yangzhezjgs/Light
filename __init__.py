@@ -116,9 +116,6 @@ class Light:
 		return Response(rep,content_type='%s;charset=UTF-8'%content_type,headers = headers,status = status)
 
 
-
-		return Response(rep, content_type='text/html', headers=headers, status=status)
-		
 	def wsgi_app(self,environ,start_response):
 		request = Request(environ)
 		response = self.dispatch_request(request)
