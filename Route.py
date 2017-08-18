@@ -6,7 +6,7 @@ class Route:
             options['methods'] = ['GET']
 
         def decorator(f):
-            self.app.add_url_rule(url, f,**options)
+            self.app.add_url_rule(url, f, 'route',**options)
             return f
 
         return decorator
