@@ -4,11 +4,26 @@ from Light.Route import Route
 import Light.exceptions as exceptions
 from Light.helper import parse_static_key
 from werkzeug.serving import run_simple
+from Light.templates import Template
 ERROR_MAP = {
     '401': Response('<h1>401 Unknown or unsupported method</h1>', content_type='text/html; charset=UTF-8', status=401),
     '404': Response('<h1>404 Source Not Found<h1>', content_type='text/html; charset=UTF-8', status=404),
     '503': Response('<h1>503 Unknown function type</h1>', content_type='text/html; charset=UTF-8',  status=503)
 }
+
+def reder_template(app,path,**options):
+    path = os.path.join(app.template_folder, path)
+    if os.path.exists(path):
+         with open(path, 'rb') as f:
+            content = f.read().decode()
+            t = Template(content)
+    return t.render(**options)
+
+
+def redirect(url,status_code=302):
+    response = Response('', status=status_code)
+    response.headers['Location'] = url
+    return response
 
 # 定义文件类型
 TYPE_MAP = {
@@ -27,7 +42,7 @@ class ExecFunc:
 
 class Light:
 
-	def __init__(self,static_folder='static'):
+	def __init__(self,template_folder='templates',static_folder='static'):
 		self.host = '127.0.0.1'
 		self.port = 8080
 		self.url_map = {}
@@ -35,6 +50,8 @@ class Light:
 		self.function_map = {}
 		self.static_folder = static_folder
 		self.route = Route(self)
+        #self.template_folder = template_folder
+        #Light.template_folder = self.template_folder
 
 	def __call__(self,environ,start_response):
 		return self.wsgi_app(environ,start_response)
