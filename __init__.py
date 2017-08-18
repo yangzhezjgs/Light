@@ -5,19 +5,28 @@ import Light.exceptions as exceptions
 from Light.helper import parse_static_key
 from werkzeug.serving import run_simple
 from Light.templates import Template
+import os,json
 ERROR_MAP = {
     '401': Response('<h1>401 Unknown or unsupported method</h1>', content_type='text/html; charset=UTF-8', status=401),
     '404': Response('<h1>404 Source Not Found<h1>', content_type='text/html; charset=UTF-8', status=404),
     '503': Response('<h1>503 Unknown function type</h1>', content_type='text/html; charset=UTF-8',  status=503)
 }
+def render_json(data):
+    content_type = "text/plain"
+    if isinstance(data, dict) or isinstance(data, list):
+        data = json.dumps(data)
+        content_type = "application/json"
+    return Response(data, content_type="%s; charset=UTF-8" % content_type, status=200)
 
-def reder_template(app,path,**options):
+def render_template(path,args):
+        return template(Light, path, args)
+def template(app,path,args={}):
+    txt=''
     path = os.path.join(app.template_folder, path)
     if os.path.exists(path):
-         with open(path, 'rb') as f:
-            content = f.read().decode()
-            t = Template(content)
-    return t.render(**options)
+        txt = open(path,'rb').read().decode()
+    t = Template(txt)
+    return t.render(args)
 
 
 def redirect(url,status_code=302):
@@ -50,8 +59,8 @@ class Light:
 		self.function_map = {}
 		self.static_folder = static_folder
 		self.route = Route(self)
-        #self.template_folder = template_folder
-        #Light.template_folder = self.template_folder
+		self.template_folder = template_folder
+		Light.template_folder = template_folder
 
 	def __call__(self,environ,start_response):
 		return self.wsgi_app(environ,start_response)
