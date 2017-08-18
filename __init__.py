@@ -33,8 +33,18 @@ def redirect(url,status_code=302):
     response = Response('', status=status_code)
     response.headers['Location'] = url
     return response
+def render_file(file_path, file_name=None):
+    if os.path.exists(file_path):
+        with open(file_path, "rb") as f:
+            content = f.read()
+        if file_name is None:
+            file_name = file_path.split("/")[-1]
+        headers = {
+            'Content-Disposition': 'attachment; filename="%s"' % file_name
+        }
+        return Response(content, headers=headers, status=200)
+    return ERROR_MAP['404']
 
-# 定义文件类型
 TYPE_MAP = {
     'css':  'text/css',
     'js': 'text/js',
