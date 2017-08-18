@@ -1,4 +1,4 @@
-class LightEXception(Exception):
+class LightException(Exception):
 	def __init__(self,code='',message='Error'):
 		self.code = code
 		self.message = message
