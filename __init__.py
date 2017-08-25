@@ -145,8 +145,8 @@ class Light:
 			if port:
 				self.port = port
 		self.function_map['static'] = ExecFunc(func=self.dispatch_static,func_type='static')
-        if not os.path.exists(self.session_path):
-            os.mkdir(self.session_path)
-        session.set_storage_path(self.session_path)
-        session.load_local_session()
-        run_simple(hostname=self.host,port=self.port,application=self,**options)
+        	if not os.path.exists(self.session_path):
+            		os.mkdir(self.session_path)
+        	session.set_storage_path(self.session_path)
+        	session.load_local_session()
+        	run_simple(hostname=self.host,port=self.port,application=self,**options)
