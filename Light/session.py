@@ -1,5 +1,6 @@
 import base64
 import time
+import os
 def create_session_id():
     return base64.encodebytes(str(time.time()).encode()).decode().replace("=", '')[:-2][::-1]
 
@@ -8,10 +9,10 @@ def get_session_id(request):
 
 
 class Session:
-    _instance = None
+    __instance = None
     def __init__(self):
         self.__session_map__ = {}
-	self.__storage_path__ = None
+        self.__storage_path__ = None
     def set_storage_path(self, path):
         self.__storage_path__ = path
     def storage(self, session_id):
@@ -24,6 +25,7 @@ class Session:
         if cls.__instance is None:
             cls.__instance = super(Session, cls).__new__(cls, *args, **kwargs)
         return cls.__instance
+
     def push(self, request, item, value):
         session_id = get_session_id(request)
         if session in self.__session_map__:
@@ -31,12 +33,13 @@ class Session:
         else:
             self.__session_map__[session_id] = {}
             self.__session_map__[session_id][item] = value
-	self.storage(session_id)
+        self.storage(session_id)
+
     def pop(self, request, item, value=True):
-        current_session = self.__session_map__.get(get_session_id(request), {}):
+        current_session = self.__session_map__.get(get_session_id(request), {})
         if item in current_session:
             current_session.pop(item, value)
-	self.storage(session_id)
+        self.storage(session_id)
     def load_local_session(self):
         if self.__storage_path__ is not None:
             session_path_list = os.listdir(self.__storage_path__)
