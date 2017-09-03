@@ -1,4 +1,4 @@
-# Light
+# light
 a simple python web framework
 
 build for study python web development
