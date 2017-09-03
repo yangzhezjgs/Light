@@ -1,6 +1,6 @@
 #coding:utf-8
 from werkzeug.wrappers import Response,Request
-from Light.Route import Route
+from Light.route import Route
 import Light.exceptions as exceptions
 from Light.helper import parse_static_key
 from werkzeug.serving import run_simple
